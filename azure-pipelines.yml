@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  imageName: flask-app
+
+stages:
+- stage: BuildAndPush
+  displayName: Build and Push Docker Image
+  jobs:
+  - job: Build
+    steps:
+    - checkout: self
+
+    - task: Docker@2
+      inputs:
+        command: buildAndPush
+        containerRegistry: 'acr-connection'  # replace with actual name
+        repository: '$(imageName)'
+        dockerfile: '**/Dockerfile'
+        tags: |
+          v1
+
+- stage: DeployToAKS
+  displayName: Deploy to AKS
+  dependsOn: BuildAndPush
+  jobs:
+  - job: Deploy
+    steps:
+    - checkout: self
+
+    - task: Kubernetes@1
+      inputs:
+        connectionType: 'Azure Resource Manager'
+        azureSubscriptionEndpoint: 'Azure subscription 1'  # replace with actual name
+        azureResourceGroup: 'devops-rg'
+        kubernetesCluster: 'devops-aks'
+        namespace: 'default'
+        command: 'apply'
+        useConfigurationFile: true
+        configuration: 'flask-deployment.yaml'
