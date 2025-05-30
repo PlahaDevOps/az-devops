@@ -37,7 +37,7 @@ stages:
     - task: Kubernetes@1
       inputs:
         connectionType: 'Azure Resource Manager'
-        serviceConnection: 'AzureRM-devops'  # replace with actual name
+        azureSubscriptionEndpoint: 'AzureRM-devops'  # replace with actual name
         azureResourceGroup: 'devops-rg'
         kubernetesCluster: 'devops-aks'
         namespace: 'default'
