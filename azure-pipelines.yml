@@ -34,6 +34,14 @@ stages:
     steps:
     - checkout: self
 
+# Retrieve secrets from Key Vault
+    - task: AzureKeyVault@2
+      inputs:
+        azureSubscription: 'AzureRM-devops'
+        KeyVaultName: 'devopskeyvaultshivam'
+        SecretsFilter: '*'  # or 'my-secret-token'
+        RunAsPreJob: true
+# Deploy to AKS using kubectl apply 
     - task: Kubernetes@1
       inputs:
         connectionType: 'Azure Resource Manager'

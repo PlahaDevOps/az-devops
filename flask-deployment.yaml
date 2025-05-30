@@ -17,6 +17,9 @@ spec:
         image: shivamadevopscr.azurecr.io/flask-app:v1
         ports:
         - containerPort: 5000
+        env:
+        - name: SECRET_TOKEN
+          value: "$(my-secret-token)"  # pulled from Azure Key Vault via pipeline 
 ---
 apiVersion: v1
 kind: Service
