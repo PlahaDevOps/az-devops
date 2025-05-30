@@ -10,7 +10,7 @@ variables:
   imageName: flask-app
   imageTag: $(Build.BuildID)
   BuildID: $(Build.BuildID)
-  my-secret-token: $(my-secret-token)
+#  my-secret-token: $(my-secret-token)
 
 stages:
 - stage: BuildAndPush
@@ -45,7 +45,7 @@ stages:
         SecretsFilter: '*'  # or 'my-secret-token'
         RunAsPreJob: true
 
-    - task: replacetokens@3
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@5
       inputs:
         rootDirectory: '$(System.DefaultWorkingDirectory)'
         targetFiles: '**/flask-deployment.yaml'
