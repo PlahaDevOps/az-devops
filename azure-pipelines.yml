@@ -24,7 +24,7 @@ stages:
         repository: '$(imageName)'
         dockerfile: '**/Dockerfile'
         tags: |
-          v1
+          $(Build.BuildId)
 
 - stage: DeployToAKS
   displayName: Deploy to AKS
