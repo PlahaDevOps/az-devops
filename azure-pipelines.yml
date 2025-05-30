@@ -8,6 +8,9 @@ pool:
 
 variables:
   imageName: flask-app
+  imageTag: $(Build.BuildID)
+  BuildID: $(Build.BuildID)
+  my-secret-token: $(my-secret-token)
 
 stages:
 - stage: BuildAndPush
@@ -24,7 +27,7 @@ stages:
         repository: '$(imageName)'
         dockerfile: '**/Dockerfile'
         tags: |
-          $(Build.BuildId)
+          $(imageTag)
 
 - stage: DeployToAKS
   displayName: Deploy to AKS
@@ -41,6 +44,19 @@ stages:
         KeyVaultName: 'devopskeyvaultshivam'
         SecretsFilter: '*'  # or 'my-secret-token'
         RunAsPreJob: true
+
+    - task: replacetokens@3
+      inputs:
+        rootDirectory: '$(System.DefaultWorkingDirectory)'
+        targetFiles: '**/flask-deployment.yaml'
+        encoding: 'utf-8'
+        tokenPrefix: '__'
+        tokenSuffix: '__'
+        writeBOM: true
+        actionOnMissing: 'warn'
+        keepToken: false
+        enableTelemetry: false 
+
 # Deploy to AKS using kubectl apply 
     - task: Kubernetes@1
       inputs:

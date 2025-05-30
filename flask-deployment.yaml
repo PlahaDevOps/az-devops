@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
       - name: flask-app
-        image: shivamadevopscr.azurecr.io/flask-app:$(Build.BuildID)
+        image: shivamadevopscr.azurecr.io/flask-app:__BuildID__   # <- dynamically replaced in pipeline
         ports:
         - containerPort: 5000
         env:
         - name: SECRET_TOKEN
-          value: "$(my-secret-token)"  # pulled from Azure Key Vault via pipeline 
+          value: "__my-secret-token__"   # <- secret pulled via Azure Key Vault task
 ---
 apiVersion: v1
 kind: Service
@@ -33,3 +33,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 5000
+
